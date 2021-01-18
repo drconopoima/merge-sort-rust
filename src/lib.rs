@@ -7,10 +7,11 @@ pub fn merge_sort<T: PartialOrd>(mut vector: Vec<T>) -> Vec<T> {
     let second_half = vector.split_off(half_element);
     let sorted_2nd_half = merge_sort(second_half);
     let sorted_1st_half = merge_sort(vector);
-    merge(sorted_1st_half, sorted_2nd_half, input_length)
+    merge(sorted_1st_half, sorted_2nd_half)
 }
 
-fn merge<T: PartialOrd>(list_1st: Vec<T>, list_2nd: Vec<T>, length: usize) -> Vec<T> {
+fn merge<T: PartialOrd>(list_1st: Vec<T>, list_2nd: Vec<T>) -> Vec<T> {
+    let length = list_1st.len() + list_2nd.len();
     let mut result: Vec<T> = Vec::with_capacity(length);
     // bring halves together, lowest to the front
     let mut list_1st_iter = list_1st.into_iter();
