@@ -25,52 +25,35 @@ pub fn merge_sort<T: PartialOrd>(mut vector: Vec<T>) -> Vec<T> {
 }
 
 fn merge<T: PartialOrd>(
-    list_1st_tuple: PeekIter<T>,
+    mut list_1st_tuple: PeekIter<T>,
     mut list_2nd_tuple: PeekIter<T>,
     mut accumulator: Vec<T>,
 ) -> Vec<T> {
-    match (&list_1st_tuple.0, &list_2nd_tuple.0) {
-        (Some(_), Some(_)) => {
-            let mut list_1st_peek = list_1st_tuple.0;
-            let mut list_1st_iter = list_1st_tuple.1;
-            let mut list_2nd_peek = list_2nd_tuple.0;
-            let mut list_2nd_iter = list_2nd_tuple.1;
-            // bring halves together, lowest to the front
-            loop {
-                match list_1st_peek {
-                    Some(ref list_1st_val) => match list_2nd_peek {
-                        Some(ref list_2nd_val) => {
-                            if list_2nd_val < list_1st_val {
-                                accumulator.push(list_2nd_peek.take().unwrap());
-                                list_2nd_peek = list_2nd_iter.next();
-                            } else {
-                                accumulator.push(list_1st_peek.take().unwrap());
-                                list_1st_peek = list_1st_iter.next();
-                            }
-                        }
-                        None => {
-                            accumulator.push(list_1st_peek.take().unwrap());
-                            accumulator.extend(list_1st_iter);
-                            return accumulator;
-                        }
-                    },
-                    None => {
-                        if let Some(list_2nd_val) = list_2nd_peek {
-                            accumulator.push(list_2nd_val);
-                        }
-                        accumulator.extend(list_2nd_iter);
-                        return accumulator;
-                    }
-                }
+    match (list_1st_tuple.0, list_2nd_tuple.0) {
+        (Some(list_1st_val), Some(list_2nd_val)) => {
+            if list_1st_val < list_2nd_val {
+                accumulator.push(list_1st_val);
+                merge(
+                    (list_1st_tuple.1.next(), list_1st_tuple.1),
+                    (Some(list_2nd_val), list_2nd_tuple.1),
+                    accumulator,
+                )
+            } else {
+                accumulator.push(list_2nd_val);
+                merge(
+                    (list_2nd_tuple.1.next(), list_2nd_tuple.1),
+                    (Some(list_1st_val), list_1st_tuple.1),
+                    accumulator,
+                )
             }
         }
-        (None, Some(_)) => {
-            accumulator.push(list_2nd_tuple.0.take().unwrap());
+        (None, Some(list_2nd_val)) => {
+            accumulator.push(list_2nd_val);
             accumulator.extend(list_2nd_tuple.1);
             return accumulator;
         }
-        (Some(_), None) => {
-            accumulator.push(list_2nd_tuple.0.take().unwrap());
+        (Some(list_1st_val), None) => {
+            accumulator.push(list_1st_val);
             accumulator.extend(list_1st_tuple.1);
             return accumulator;
         }
