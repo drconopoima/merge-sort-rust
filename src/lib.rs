@@ -4,39 +4,42 @@ pub fn merge_sort<T: PartialOrd>(mut vector: Vec<T>) -> Vec<T> {
         return vector;
     }
     let half_element = input_length / 2;
-    let mut result: Vec<T> = Vec::with_capacity(input_length);
     let second_half = vector.split_off(half_element);
     let sorted_2nd_half = merge_sort(second_half);
     let sorted_1st_half = merge_sort(vector);
+    merge(sorted_1st_half, sorted_2nd_half, input_length)
+}
 
+fn merge<T: PartialOrd>(list_1st: Vec<T>, list_2nd: Vec<T>, length: usize) -> Vec<T> {
+    let mut result: Vec<T> = Vec::with_capacity(length);
     // bring halves together, lowest to the front
-    let mut sorted_1st_half_iter = sorted_1st_half.into_iter();
-    let mut sorted_2nd_half_iter = sorted_2nd_half.into_iter();
-    let mut sorted_1st_half_peek = sorted_1st_half_iter.next();
-    let mut sorted_2nd_half_peek = sorted_2nd_half_iter.next();
+    let mut list_1st_iter = list_1st.into_iter();
+    let mut list_2nd_iter = list_2nd.into_iter();
+    let mut list_1st_peek = list_1st_iter.next();
+    let mut list_2nd_peek = list_2nd_iter.next();
     loop {
-        match sorted_1st_half_peek {
-            Some(ref sorted_1st_half_val) => match sorted_2nd_half_peek {
-                Some(ref sorted_2nd_half_val) => {
-                    if sorted_2nd_half_val < sorted_1st_half_val {
-                        result.push(sorted_2nd_half_peek.take().unwrap());
-                        sorted_2nd_half_peek = sorted_2nd_half_iter.next();
+        match list_1st_peek {
+            Some(ref list_1st_val) => match list_2nd_peek {
+                Some(ref list_2nd_val) => {
+                    if list_2nd_val < list_1st_val {
+                        result.push(list_2nd_peek.take().unwrap());
+                        list_2nd_peek = list_2nd_iter.next();
                     } else {
-                        result.push(sorted_1st_half_peek.take().unwrap());
-                        sorted_1st_half_peek = sorted_1st_half_iter.next();
+                        result.push(list_1st_peek.take().unwrap());
+                        list_1st_peek = list_1st_iter.next();
                     }
                 }
                 None => {
-                    result.push(sorted_1st_half_peek.take().unwrap());
-                    result.extend(sorted_1st_half_iter);
+                    result.push(list_1st_peek.take().unwrap());
+                    result.extend(list_1st_iter);
                     return result;
                 }
             },
             None => {
-                if let Some(sorted_2nd_half_val) = sorted_2nd_half_peek {
-                    result.push(sorted_2nd_half_val);
+                if let Some(list_2nd_val) = list_2nd_peek {
+                    result.push(list_2nd_val);
                 }
-                result.extend(sorted_2nd_half_iter);
+                result.extend(list_2nd_iter);
                 return result;
             }
         }
