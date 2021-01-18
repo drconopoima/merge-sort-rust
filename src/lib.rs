@@ -54,6 +54,13 @@ mod tests {
         assert_eq!(vector, vec![0, 1, 2, 3, 4, 5, 6, 7, 41, 55, 100]);
     }
     #[test]
+    fn sort_empty() {
+        use super::*;
+        let vector_empty: Vec<f32> = Vec::new();
+        let sorted_empty = merge_sort(vector_empty.clone());
+        assert_eq!(vector_empty, sorted_empty);
+    }
+    #[test]
     fn random_sort() {
         use super::*;
         use rand::{distributions::Uniform, Rng};
