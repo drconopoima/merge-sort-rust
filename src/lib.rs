@@ -21,7 +21,7 @@ fn merge<T: PartialOrd>(list_1st: Vec<T>, list_2nd: Vec<T>) -> Vec<T> {
     loop {
         match (&mut list_1st_peek, &mut list_2nd_peek) {
             (Some(list_1st_val), Some(list_2nd_val)) => {
-                if list_1st_val < list_2nd_val {
+                if list_1st_val <= list_2nd_val {
                     result.push(list_1st_peek.take().unwrap());
                     list_1st_peek = list_1st_iter.next();
                 } else {
