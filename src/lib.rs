@@ -18,30 +18,27 @@ fn merge<T: PartialOrd>(list_1st: Vec<T>, list_2nd: Vec<T>, length: usize) -> Ve
     let mut list_1st_peek = list_1st_iter.next();
     let mut list_2nd_peek = list_2nd_iter.next();
     loop {
-        match list_1st_peek {
-            Some(ref list_1st_val) => match list_2nd_peek {
-                Some(ref list_2nd_val) => {
-                    if list_2nd_val < list_1st_val {
-                        result.push(list_2nd_peek.take().unwrap());
-                        list_2nd_peek = list_2nd_iter.next();
-                    } else {
-                        result.push(list_1st_peek.take().unwrap());
-                        list_1st_peek = list_1st_iter.next();
-                    }
-                }
-                None => {
+        match (&mut list_1st_peek, &mut list_2nd_peek) {
+            (Some(list_1st_val), Some(list_2nd_val)) => {
+                if list_1st_val < list_2nd_val {
                     result.push(list_1st_peek.take().unwrap());
-                    result.extend(list_1st_iter);
-                    return result;
+                    list_1st_peek = list_1st_iter.next();
+                } else {
+                    result.push(list_2nd_peek.take().unwrap());
+                    list_2nd_peek = list_2nd_iter.next();
                 }
-            },
-            None => {
-                if let Some(list_2nd_val) = list_2nd_peek {
-                    result.push(list_2nd_val);
-                }
+            }
+            (Some(_), None) => {
+                result.push(list_1st_peek.take().unwrap());
+                result.extend(list_1st_iter);
+                return result;
+            }
+            (None, Some(_)) => {
+                result.push(list_2nd_peek.take().unwrap());
                 result.extend(list_2nd_iter);
                 return result;
             }
+            _ => return result,
         }
     }
 }
