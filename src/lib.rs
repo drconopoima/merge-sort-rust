@@ -69,4 +69,18 @@ mod tests {
         let merge_sorted = merge_sort(merge_sorted);
         assert_eq!(merge_sorted, std_sorted)
     }
+    #[test]
+    fn does_not_overflow() {
+        use super::*;
+        use rand::{distributions::Uniform, Rng};
+        let mut rng = rand::thread_rng();
+        let range = Uniform::new(0, 20);
+        let random_vector: Vec<usize> = (0..10000).map(|_| rng.sample(&range)).collect();
+        let merge_sorted = random_vector.clone();
+        let mut std_sorted = random_vector.clone();
+        std_sorted.sort();
+        // std_sorted.push(1000);
+        let merge_sorted = merge_sort(merge_sorted);
+        assert_eq!(merge_sorted, std_sorted)
+    }
 }
